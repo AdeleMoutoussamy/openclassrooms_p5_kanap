@@ -1,51 +1,69 @@
-const productId = new URL(window.location.href).searchParams.get("id");
+window.onload = function () {getArticle()};
 
-getArticle();
-
-function getArticle()
+async function getArticle()
 {
-    fetch("http://localhost:3000/api/products/" + productId)
-    .then((response) =>
-    {
-        return response.json();
-    })
+    // Récupération de l'id du produit dans l'url
 
-    .then(async function (resultatAPI)
-    {
-        article = await resultatAPI;
-        console.log(article);
-        if (article){
-            getPost(article);
-        }
-    })
+    // const productId = new URLSearchParams(window.location.href).get("id")  ////
+
+    var str = window.location.href;
+    var url = new URL(str);
+    var productId = url.searchParams.get("id");
+    console.log(productId);
+
+    let reponse = await fetch('http://localhost:3000/api/products/' + productId)
+    const article = await reponse.json()
+
+    displayArticle(article)
 }
-    
-function getPost(article)
+
+// Affichage du produit
+function displayArticle(article)
 {
+    console.log(article)
+
     // Img
     let productImg = document.createElement("img");
     document.querySelector(".item__img").appendChild(productImg);
-    productImg.src = article.imageUrl;
-    productImg.alt = article.altTxt;
+    productImg.setAttribute("src", article.imageUrl);
+    productImg.setAttribute("alt", article.altTxt);
 
     // h1
     let productName = document.getElementById('title');
-    productName.innerHTML = article.name;
+    productName.textContent = article.name;
 
     // Price
     let productPrice = document.getElementById('price');
-    productPrice.innerHTML = article.price;
+    productPrice.textContent = article.price;
 
     // Description
     let productDescription = document.getElementById('description');
-    productDescription.innerHTML = article.description;
+    productDescription.textContent = article.description;
 
     // Colors
-    for (let colors of article.colors){
-        console.log(colors);
+    for (let colors of article.colors)
+    {
         let productColors = document.createElement("option");
         document.querySelector("#colors").appendChild(productColors);
         productColors.value = colors;
-        productColors.innerHTML = colors;
+        productColors.textContent = colors;
     }
+
+    toCart(article._id)
 }
+
+
+// Le Panier
+
+function toCart(idProd)
+{   
+    // J'attache un écouteur d'événement au bouton
+    let button = document.getElementById('addToCart');
+    button.addEventListener('click', ()=>
+    {
+        addToCart(idProd)
+    });
+}
+
+function addToCart(idProd)
+{}
