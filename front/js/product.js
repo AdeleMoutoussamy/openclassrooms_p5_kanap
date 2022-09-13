@@ -41,12 +41,12 @@ function displayArticle(article)
     productDescription.textContent = article.description;
 
     // Colors
-    for (let colors of article.colors)
+    for (let color of article.colors)
     {
         let productColors = document.createElement("option");
         document.querySelector("#colors").appendChild(productColors);
-        productColors.value = colors;
-        productColors.textContent = colors;
+        productColors.value = color;
+        productColors.textContent = color;
     }
 
     toCart(article._id)
@@ -55,15 +55,69 @@ function displayArticle(article)
 
 // Le Panier
 
-function toCart(idProd)
+function toCart(idProduct)
 {   
     // J'attache un écouteur d'événement au bouton
     let button = document.getElementById('addToCart');
     button.addEventListener('click', ()=>
     {
-        addToCart(idProd)
+        addToCart(idProduct)
     });
 }
 
-function addToCart(idProd)
-{}
+function addToCart(idProduct)
+{
+    const colorPicked = document. querySelector("#colors");
+    const quantityPicked = document.querySelector("#quantity");
+
+    if (quantityPicked.value > 0 && quantityPicked.value <=100 && quantityPicked.value != 0)
+    {
+        let choiceColor = colorPicked.value;
+        let choiceQuantity = quantityPicked.value;
+    
+        // Récupération des options de l'article à ajouter au panier
+        let optionsProduct =
+        {
+            id: idProduct,
+            color: choiceColor,
+            quantity: choiceQuantity,
+            name: idProduct.name,
+            price: idProduct.price,
+            description: idProduct.description,
+            img: idProduct.imageUrl,
+            altImg: idProduct.altTxt
+        };
+
+        // Accéder à l'array grâce au LocalStorage
+        let productLs = JSON.parse(localStorage.getItem("product"));
+
+        // Si le panier a déjà 1 article
+        if (productLs)
+        {
+            const resultFind = productLs.find(
+            (element) => element.id === idProduct && element.color === choiceColor);
+
+            // Si le produit choisi est déjà dans le panier
+            if (resultFind)
+            {
+                let newQuantity =
+                parseInt(optionsProduct.quantity) + parseInt(resultFind.quantity);
+                resultFind.quantity = newQuantity;
+                localStorage.setItem("product", JSON.stringify(productLs));
+                console.table(productLs);
+
+            // Si le produit choisi n'est pas dans le panier
+            } else {
+                productLs.push(optionsProduct);
+                localStorage.setItem("product", JSON.stringify(productLs));
+                console.table(productLs);
+            }
+
+          // Si le panier est vide
+        } else {
+            productLs.push(optionsProduct);
+            localStorage.setItem("product", JSON.stringify(productLs));
+            console.table(productLs);
+        }
+    }
+}
