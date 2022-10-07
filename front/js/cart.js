@@ -30,11 +30,16 @@ async function getCart()
         });
     }
 
+    /**
+     * @param {Object} productId Object qui contient l'Id de chaque article.
+     * @returns
+     */
     async function getArticle(productId)
     {
         let reponse = await fetch('http://localhost:3000/api/products/' + productId);
         return await reponse.json();
     }
+
 
     function displayProduct(elem, productLs)
     {
@@ -161,10 +166,6 @@ function getTotals(productLs)
 // Modification d'une quantité de produit
 function modifyQtt(event, productLs, color, id)
 {
-    // console.log(productLs);
-    // console.log(event.target.value);
-    // console.log(color);
-    // console.log(id);
     const qttModifValue = event.target.value;
     const ls = JSON.parse(localStorage.getItem('product'));
     productLs.forEach((part,index) =>
@@ -195,27 +196,27 @@ function deleteProduct(event, productLs, color, id)
     console.log(color);
     console.log(id);
 
-    // let btnRemove = document.querySelectorAll(".deleteItem");
+    let btnRemove = document.querySelectorAll(".deleteItem");
 
-    // for (let j = 0; j < btnRemove.length; j++)
-    // {
-    //     btnRemove[j].addEventListener("click" , (event) => {
-    //         event.preventDefault();
+    for (let j = 0; j < btnRemove.length; j++)
+    {
+        btnRemove[j].addEventListener("click" , (event) => {
+            event.preventDefault();
 
-    //         // Sélection de l'élément à supprimer en fonction de son id ET sa couleur
-    //         let idDelete = productLs[j].id;
-    //         let colorDelete = productLs[j].colorProduct;
+            // Sélection de l'élément à supprimer en fonction de son id et sa couleur
+            let idDelete = productLs[j].id;
+            let colorDelete = productLs[j].color;
 
-    //         productLs = productLs.filter( elem => elem.id !== idDelete || elem.colorProduct !== colorDelete );
+            productLs = productLs.filter( elem => elem.id !== idDelete || elem.colorProduct !== colorDelete );
 
-    //         localStorage.setItem("product", JSON.stringify(productLs));
+            localStorage.setItem("product", JSON.stringify(productLs));
 
-    //         // Alerte produit supprimé
-    //         alert("Ce produit a bien été supprimé du panier");
+            // Alerte produit supprimé
+            alert("Ce produit a bien été supprimé du panier.");
 
-    //         // location.reload();
-    //     })
-    // }
+        })
+    }
+
 }
 
 // Formulaire
@@ -283,13 +284,13 @@ function getForm()
     // Validation
     const validAddress = function(inputAddress)
     {
-        let adressErrorMsg = inputAddress.nextElementSibling;
+        let addressErrorMsg = inputAddress.nextElementSibling;
 
         if (addressRegExp.test(inputAddress.value))
         {
-            adressErrorMsg.textContent = '';
+            addressErrorMsg.textContent = '';
         } else {
-            adressErrorMsg.textContent = 'Adresse non valide.'
+            addressErrorMsg.textContent = 'Adresse non valide.'
         }
     };
 
@@ -338,24 +339,38 @@ function getForm()
 }
 getForm();
 
-
 function postForm(productLs, event)
 {
     event.preventDefault();
-    console.log(productLs)
+    console.log(productLs);
 
     // Récupération des coordonnées du formulaire client
-    let inputFirstName = document.getElementById('firstName');
-    let inputLastName = document.getElementById('lastName');
-    let inputAdress = document.getElementById('address');
-    let inputCity = document.getElementById('city');
-    let inputEmail = document.getElementById('email');
+    let inputFirstName = document.getElementById('firstName').value;
+    let inputLastName = document.getElementById('lastName').value;
+    let inputAddress = document.getElementById('address').value;
+    let inputCity = document.getElementById('city').value;
+    let inputEmail = document.getElementById('email').value;
 
-    // Construction d'un array depuis le Local Storage
-    let idProd = [];
-    for (let i = 0; i<productLs.length;i++)
+    // On vérifie que tous les champs sont bien renseignés
+    // On vérifie qu'aucun champ n'est vide
+    if (!inputFirstName.value || !inputLastName.value || !inputAddress.value || !inputCity.value || !inputEmail.value)
     {
-        idProd.push(productLs[i].id);
+        alert(" Veuillez renseigner tous les champs ! ")
+
+       // On vérifie que les champs sont correctement remplis suivant les regex mises en place
+    } if (firstNameErrorMsg === true || lastNameErrorMsg === true || 
+        addressErrorMsg === true || cityErrorMsg === true || emailErrorMsg === true)
+    {
+        alert(" Veuillez remplir correctement les champs du formulaire ! ")
+
+    } else {
+        return false;
+    }
+
+    let idProd = [];
+    for (let i = 0; i < productLs.length; i++)
+    {
+        idProd.push(productLs[i]._id);
     }
     console.log(idProd);
 
@@ -365,7 +380,7 @@ function postForm(productLs, event)
         {
             firstName: inputFirstName.value,
             lastName: inputLastName.value,
-            address: inputAdress.value,
+            address: inputAddress.value,
             city: inputCity.value,
             email: inputEmail.value,
         },
@@ -373,28 +388,6 @@ function postForm(productLs, event)
     } 
 
     // Requête POST
-    // const options = await fetch("http://localhost:3000/api/products/order",
-    // {
-    //     method: 'POST',
-    //     headers:
-    //     {
-    //         "Content-Type": "application/json" 
-    //     },
-    //     body: JSON.stringify(order),
-    // })
-    // options.then(async(reponse) =>
-    // {
-    //     try
-    //     {
-    //         console.log(reponse);
-    //         const contenu = await reponse.json();
-    //         console.log(contenu);
-
-    //     } catch(error) {
-    //         console.log(error);
-    //     }
-    // });
-
     const options = {
         method: 'POST',
         headers:
@@ -409,14 +402,8 @@ function postForm(productLs, event)
     .then((result) =>
     {
         console.log(result);
-        localStorage.clear();
-        localStorage.setItem("orderId", result.orderId);
+        localStorage.removeItem('product');
 
-        document.location.href = "confirmation.html";
+        document.location.href = "confirmation.html?orderId=" + result.orderId;
     })
-    // .catch((error) =>
-    // {
-    //     console.log(error);
-    // })
-
 }

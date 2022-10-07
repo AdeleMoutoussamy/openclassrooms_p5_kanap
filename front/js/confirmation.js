@@ -1,14 +1,7 @@
 window.onload = function () {confirmation()};
 
+// Affichage du numéro de commande
 function confirmation()
 {
-    const orderId = getOrderId();
-    let id = orderId;
-    document.getElementById('orderId').textContent = id;
-};
-
-// Fonction pour récupérer l'id de la commande dans l'URL
-function getOrderId()
-{
-    return new URL(location.href).searchParams.get('id');
+    document.getElementById('orderId').textContent = new URL(location.href).searchParams.get('orderId');
 }

@@ -46,7 +46,9 @@ function displayArticle(article)
     toCart(article._id);
 }
 
-
+/**
+ * @param {Object} idProduct Object qui contient l'Id de chaque article.
+ */
 // Le Panier
 function toCart(idProduct)
 {   
@@ -58,6 +60,9 @@ function toCart(idProduct)
     });
 }
 
+/**
+ * @param {Object} idProduct Object qui contient l'Id de chaque article.
+ */
 function addToCart(idProduct)
 {
     const colorPicked = document. querySelector("#colors");

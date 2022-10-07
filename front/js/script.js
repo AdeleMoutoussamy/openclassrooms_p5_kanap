@@ -1,29 +1,25 @@
+// Attend que le DOM soit chargé
 window.onload = function () {allProducts()};
 
+// Récupération des articles de l'API
 async function allProducts()
 {
-    let products = await fetch('http://localhost:3000/api/products')
-    let result = await products.json()
-
-    // for (let i=0; i < result.length; i++)
-    // {
-    //     displayProduct(result[i])
-    // }
-
-    // for (let i in result)
-    // {
-    //     displayProduct(result[i])
-    // }
+    let products = await fetch('http://localhost:3000/api/products');
+    let result = await products.json();
 
     for (let element of result)
     {
-        displayProduct(element)
+        displayProduct(element);
     }
 }
 
+/**
+ * @param {Object} product Object qui contient les articles de l'API.
+ */
+// Insertion des produits dans la page d'accueil
 function displayProduct(product)
 {
-    console.log(product)
+    console.log(product);
 
     // a
     let productLink = document.createElement("a");
