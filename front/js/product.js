@@ -1,17 +1,23 @@
+// Attend que le DOM soit chargé
 window.onload = function () {getArticle()};
 
+/**
+ * Récupération de l'ID de l'article dans l'URL.
+ */
 async function getArticle()
 {
-    // Récupération de l'ID du produit dans l'URL
     const productId = new URLSearchParams(window.location.search).get("id");
 
-    let reponse = await fetch('http://localhost:3000/api/products/' + productId);
+    const reponse = await fetch('http://localhost:3000/api/products/' + productId);
     const article = await reponse.json();
 
     displayArticle(article);
 }
 
-// Affichage du produit
+/**
+ * Insertion des détails de l'article dans la page produit.
+ * @param {Object} article Object qui contient les détails de l'article.
+ */
 function displayArticle(article)
 {
     console.log(article);
@@ -43,17 +49,17 @@ function displayArticle(article)
         productColors.textContent = color;
     }
 
-    toCart(article._id);
+    eventCart(article._id);
 }
 
 /**
- * @param {Object} idProduct Object qui contient l'Id de chaque article.
+ * Le Panier.
+ * Attacher un écouteur d'événement au bouton " Ajouter au panier ".
+ * @param {String} idProduct String qui contient l'ID des articles.
  */
-// Le Panier
-function toCart(idProduct)
+function eventCart(idProduct)
 {   
-    // J'attache un écouteur d'événement au bouton
-    let button = document.getElementById('addToCart');
+    const button = document.getElementById('addToCart');
     button.addEventListener('click', ()=>
     {
         addToCart(idProduct);
@@ -61,7 +67,8 @@ function toCart(idProduct)
 }
 
 /**
- * @param {Object} idProduct Object qui contient l'Id de chaque article.
+ * Choix de la quantité et de la couleur, ainsi que d'ajouter l'article au panier.
+ * @param {String} idProduct String qui contient l'ID des articles.
  */
 function addToCart(idProduct)
 {
@@ -72,13 +79,14 @@ function addToCart(idProduct)
     {
         if (colorPicked.value != "")
         {
-            let choiceColor = colorPicked.value;
-            let choiceQuantity = quantityPicked.value;
+            const choiceColor = colorPicked.value;
+            const choiceQuantity = quantityPicked.value;
+
             console.log(colorPicked.value);
             console.log(quantityPicked.value);
 
             // Récupération des options de l'article à ajouter au panier
-            let optionsProduct =
+            const optionsProduct =
             {
                 id: idProduct,
                 color: choiceColor,
@@ -98,7 +106,7 @@ function addToCart(idProduct)
                 // Si le produit choisi est déjà dans le panier
                 if (resultFind)
                 {
-                    let newQuantity =
+                    const newQuantity =
                     parseInt(optionsProduct.quantity) + parseInt(resultFind.quantity);
                     resultFind.quantity = newQuantity;
 
@@ -109,19 +117,20 @@ function addToCart(idProduct)
 
               // Si le panier n'existe pas
             } else {
+                // productLs est un tableau vide
                 productLs = [];
                 productLs.push(optionsProduct);
             }
 
             localStorage.setItem("product", JSON.stringify(productLs));
             console.table(productLs);
-            alert('Produit ajouté !')
+            alert(' Produit ajouté au panier ! ')
 
         } else {
-            alert('Vous devez sélectionnez une couleur !')
+            alert(' Vous devez sélectionnez une couleur ! ')
         }
         
     } else {
-        alert('Quantité invalide !')
+        alert(' Quantité invalide ! ')
     }
 }

@@ -1,11 +1,13 @@
 // Attend que le DOM soit chargé
 window.onload = function () {allProducts()};
 
-// Récupération des articles de l'API
+/**
+ * Récupération des articles de l'API.
+ */
 async function allProducts()
 {
-    let products = await fetch('http://localhost:3000/api/products');
-    let result = await products.json();
+    const products = await fetch('http://localhost:3000/api/products');
+    const result = await products.json();
 
     for (let element of result)
     {
@@ -14,9 +16,9 @@ async function allProducts()
 }
 
 /**
+ * Création et insertion des articles dans la page d'accueil.
  * @param {Object} product Object qui contient les articles de l'API.
  */
-// Insertion des produits dans la page d'accueil
 function displayProduct(product)
 {
     console.log(product);
