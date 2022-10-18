@@ -16,7 +16,7 @@ async function getArticle()
 
 /**
  * Insertion des détails de l'article dans la page produit.
- * @param {Object} article Object qui contient les détails de l'article.
+ * @param {Object} article Object qui contient un seul produit.
  */
 function displayArticle(article)
 {

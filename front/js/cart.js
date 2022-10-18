@@ -38,7 +38,7 @@ async function getCart()
     }
 
     /**
-     * Récupérations de l'ID des articles.
+     * Récupération de l'ID des articles.
      * @param {String} productId String qui contient l'ID des articles.
      * @returns
      */
