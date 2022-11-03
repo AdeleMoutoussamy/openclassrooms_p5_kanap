@@ -59,7 +59,9 @@ function displayArticle(article)
  */
 function eventCart(idProduct)
 {   
+    // Je récupère le boutton
     const button = document.getElementById('addToCart');
+
     button.addEventListener('click', ()=>
     {
         addToCart(idProduct);
@@ -72,6 +74,7 @@ function eventCart(idProduct)
  */
 function addToCart(idProduct)
 {
+    // Je récupère les input
     const colorPicked = document. querySelector("#colors");
     const quantityPicked = document.querySelector("#quantity");
 
@@ -96,7 +99,7 @@ function addToCart(idProduct)
             // Déclaration d'une variable
             let productLs;
 
-            // Si le panier existe
+            // Je regarde si le panier existe
             if (localStorage.getItem('product'))
             {
                 productLs = JSON.parse(localStorage.getItem('product'));
