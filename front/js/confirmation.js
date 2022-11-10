@@ -6,5 +6,6 @@ window.onload = function () {confirmation()};
  */
 function confirmation()
 {
+    // Ja passe l'ID de la commande dans l'URL pour afficher le numéro de commande
     document.getElementById('orderId').textContent = new URL(location.href).searchParams.get('orderId');
 }

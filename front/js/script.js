@@ -2,13 +2,14 @@
 window.onload = function () {allProducts()};
 
 /**
- * Récupération des articles de l'API.
+ * Récupération des Articles de l'API.
  */
 async function allProducts()
 {
     const products = await fetch('http://localhost:3000/api/products');
     const result = await products.json();
 
+    // Je récupére un element (UN seul Article) dans le tableau result
     for (let element of result)
     {
         displayProduct(element);
@@ -16,11 +17,12 @@ async function allProducts()
 }
 
 /**
- * Création et insertion des articles dans la page d'accueil.
- * @param {Object} product Object qui contient les articles de l'API.
+ * Création et insertion des Articles dans la page d'accueil.
+ * @param {Object} product Object qui contient les Articles de l'API.
  */
 function displayProduct(product)
 {
+    // Affiche les Articles dans la console
     console.log(product);
 
     // a
@@ -46,6 +48,7 @@ function displayProduct(product)
     productDescription.setAttribute("class", "productDescription");
     productDescription.textContent = product.description;
 
+    // J'ajoute mes éléments au DOM
     productArticle.appendChild(productImg);
     productArticle.append(productName);
     productArticle.append(productDescription);

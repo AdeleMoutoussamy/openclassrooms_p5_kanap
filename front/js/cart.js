@@ -2,46 +2,56 @@
 window.onload = function () {getCart()};
 
 /**
+ * Panier.
  * Récupération du panier via le Local Storage.
  */
 async function getCart()
 {
     // productLs est un tableau vide
     const productLs = [];
+    // Je récupére le panier dans le Local Storage
     const cart = JSON.parse(localStorage.getItem('product'));
-    
+
+    // Je vérifie si mon panier est vide
     if (cart === null || cart == 0)
     {
         alert(' Votre panier est vide ! ')
- 
+
+      // Si mon panier n'est pas vide
     } else {
 
+        // Je fait une boucle sur l'Article dans le panier
         for (let i in cart)
         {
+            // Je récupére l'ID de l'Article que j'avais stocké dans le Local Storage
             const elem = await getArticle(cart[i].id);
             elem.color = cart[i].color;
             elem.quantity = cart[i].quantity;
+            // Je met mon Article complet (elem) dans le tableau productLs
             productLs.push(elem);
 
+            // Affichage des Articles dans le panier
             displayProduct(elem, productLs);
         }
 
+        // Affichage des Articles et du prix total
         getTotals(productLs);
 
-        // Attacher un écouteur d'événement au bouton " Commander ! "
+        // J'attache un écouteur d'événement 'click' au bouton " Commander ! "
         document.getElementById("order").addEventListener("click", (event) =>
         {
-            postForm(productLs, event);
+            sendOrder(productLs, event);
         });
 
+        // Formulaire
         eventForm();
     }
 
     /**
-     * Récupération de l'ID des articles.
-     * @param {String} productId String qui contient l'ID des articles.
-     * @returns
-     */
+    * Récupération de l'ID des Articles.
+    * @param {String} productId String qui contient l'ID de l'Article.
+    * @returns
+    */
     async function getArticle(productId)
     {
         const reponse = await fetch('http://localhost:3000/api/products/' + productId);
@@ -49,12 +59,13 @@ async function getCart()
     }
 
     /**
-     * Création et insertion des éléments dans la page panier.
-     * @param {Object} elem Object qui contient Un seul article.
-     * @param {Array} productLs Array qui contient le/les articles dans le panier. 
-     */
+    * Création et insertion des éléments dans la page panier.
+    * @param {Object} elem Object qui contient UN seul Article.
+    * @param {Array} productLs Array qui contient tous les Articles avec leur prix, leur quantité, etc ...
+    */
     function displayProduct(elem, productLs)
     {
+        // Affiche de l'Article dans la console
         console.log(elem);
 
         // élément "article"
@@ -109,7 +120,7 @@ async function getCart()
         productItemContentSettings.appendChild(productItemContentSettingsQuantity);
         productItemContentSettingsQuantity.className = "cart__item__content__settings__quantity";
 
-        // "Qté : "
+        // " Qté : "
         let productQte = document.createElement("p");
         productItemContentSettingsQuantity.appendChild(productQte);
         productQte.textContent = "Qté : ";
@@ -123,7 +134,7 @@ async function getCart()
         productQuantity.setAttribute("min", "1");
         productQuantity.setAttribute("max", "100");
         productQuantity.setAttribute("name", "itemQuantity");
-        // Attacher un écouteur d'événement pour la modification de la quantité
+        // J'attache un écouteur d'événement 'change' pour la modification de la quantité
         productQuantity.addEventListener("change", (event) =>
         {
             modifyQtt(event, productLs, elem.color, elem._id);
@@ -139,23 +150,26 @@ async function getCart()
         productItemContentSettingsDelete.appendChild(productRemove);
         productRemove.className = "deleteItem";
         productRemove.textContent = "Supprimer";
-        // Attacher un écouteur d'événement au bouton " Supprimer "
+        // J'attache un écouteur d'événement 'click' au bouton " Supprimer "
         productRemove.addEventListener("click", (event) =>
         {
             deleteProduct(event, productLs, elem.color, elem._id);
         });
     }
-
 }
 
 /**
- * Récupération total des quantités.
- * @param {Array} productLs Array qui contient le/les articles dans le panier.
+ * Récupération total des quantités et du prix des Articles.
+ * @param {Array} productLs Array qui contient tous les Articles avec leur prix, leur quantité, etc ...
  */
 function getTotals(productLs)
 {
+    // Je récupére l'input
     var elementsQtt = document.getElementsByClassName('itemQuantity');
-    var myLength = elementsQtt.length,
+    // Je parcoure mon tableau myLength
+    var myLength = elementsQtt.length
+
+    // Récupération de la quantité total
     totalQtt = 0;
 
     for (var i = 0; i < myLength; ++i)
@@ -163,8 +177,11 @@ function getTotals(productLs)
         totalQtt += elementsQtt[i].valueAsNumber;
     }
 
+    // Je récupére l'id 
     const productTotalQuantity = document.getElementById('totalQuantity');
+    // Je met la quantité total à l'id
     productTotalQuantity.textContent = totalQtt;
+    // Affiche la quantité total dans la console
     console.log(totalQtt);
 
     // Récupération du prix total
@@ -175,17 +192,20 @@ function getTotals(productLs)
         totalPrice += elementsQtt[i].valueAsNumber * productLs[i].price;
     }
 
+    // Je récupére l'id
     const productTotalPrice = document.getElementById('totalPrice');
+    // Je met le prix total à l'id
     productTotalPrice.textContent = totalPrice;
+    // Affiche le prix total dans la console
     console.log(totalPrice);
 }
 
 /**
- * Modification d'une quantité de l'article.
- * @param {Event} event Event qui change la quantité de l'article.
- * @param {Array} productLs Array qui contient le/les articles dans le panier.
- * @param {String} color String qui contient la couleur de l'article.
- * @param {String} id String qui contient l'ID de l'article.
+ * Modification d'une quantité d'un Article.
+ * @param {Event} event Event qui change la quantité de l'Article.
+ * @param {Array} productLs Array qui contient tous les Articles avec leur prix, leur quantité, etc ...
+ * @param {String} color String qui contient la couleur de l'Article.
+ * @param {String} id String qui contient l'ID de l'Article.
  */
 function modifyQtt(event, productLs, color, id)
 {
@@ -193,11 +213,12 @@ function modifyQtt(event, productLs, color, id)
     const qttModifValue = event.target.value;
     const ls = JSON.parse(localStorage.getItem('product'));
 
-    // Boucle sur le tableau productLs avec "part" et "index" en paramètre
     productLs.forEach((part,index) =>
     {
+        // Affiche de l'index de l'Article dans la console
         console.log(index);
 
+        // Je vérifie si l'Article à le même ID et couleur que l'Article que je veux modifié
         if (part._id === id && part.color === color)
         {
             // Modification de la quantité dans le Local Storage
@@ -208,7 +229,7 @@ function modifyQtt(event, productLs, color, id)
         }
     });
 
-    // Remplacement de l'ancien Local Storage par el nouveau avec la quantité mis à jour
+    // Remplacement de l'ancien Local Storage par le nouveau avec la quantité mise à jour
     localStorage.setItem('product', JSON.stringify(ls));
 
     // Recalcule de la quantité et du prix
@@ -216,14 +237,15 @@ function modifyQtt(event, productLs, color, id)
 }
 
 /**
- * Suppression d'un article dans le panier.
- * @param {Event} event Event qui supprime l'article du panier.
- * @param {Array} productLs Array qui contient le/les articles dans le panier.
- * @param {String} color String qui contient la couleur de l'article.
- * @param {String} id String qui contient l'ID de l'article.
+ * Suppression d'un Article dans le panier.
+ * @param {Event} event Event qui supprime l'Article du panier.
+ * @param {Array} productLs Array qui contient tous les Articles avec leur prix, leur quantité, etc ...
+ * @param {String} color String qui contient la couleur de l'Article.
+ * @param {String} id String qui contient l'ID de l'Article.
  */
 function deleteProduct(event, productLs, color, id)
 {
+    // Affiche le tableau, l'event, la color et l'id dans la console
     console.log(productLs);
     console.log(event.target);
     console.log(color);
@@ -231,10 +253,10 @@ function deleteProduct(event, productLs, color, id)
 
     const ls = JSON.parse(localStorage.getItem("product"));
 
-    // Boucle sur le tableau productLs avec "part" et "index" en paramètre
     productLs.forEach((elem, index) => 
-        {
-            if (elem._id === id && color == elem.color)
+    {
+        // Je vérifie si l'Article à le même ID et couleur que l'Article que je veux supprimé
+        if (elem._id === id && color == elem.color)
         {
 
             // Suppression de l'index dans productLs
@@ -247,9 +269,10 @@ function deleteProduct(event, productLs, color, id)
         }
     });
 
+    // Remplacement de l'ancien Local Storage par le nouveau avec la quantité mise à jour
     localStorage.setItem("product", JSON.stringify(ls));
 
-    // Je supprime l'article de la page panier
+    // Je supprime l'Article de la page panier
     event.target.closest("article").remove();
 
     // Recalcule de la quantité et du prix
@@ -258,16 +281,18 @@ function deleteProduct(event, productLs, color, id)
 
 /**
  * Formulaire.
- * 
+ * Vérification des champs.
  */
 function eventForm()
 {
+    // Je récupére le formulaire
     const form = document.querySelector(".cart__order__form");
 
-    // Attacher un écouteur d'événement sur la modification des champs
+    // J'Attache un écouteur d'événement 'blur', puis une fonction sur les champs
     // Prénom
     form.firstName.addEventListener("blur", function ()
     {
+        // this représente le champ input du formulaire
         validFirstName(this);
     });
 
@@ -305,11 +330,13 @@ const validFirstName = function (inputFirstName)
     let nameRegExp = new RegExp("^[a-zA-Zàâäéèêëïîôöùûüç ,.'-]+$");
     let firstNameErrorMsg = inputFirstName.nextElementSibling;
 
+    // Je vérifie si le FirstName correspond à la Regex mise en place
     if (nameRegExp.test(inputFirstName.value))
     {
         firstNameErrorMsg.textContent = "";
         return true;
 
+      // Si ça ne correspond pas à la Regex
     } else {
         firstNameErrorMsg.textContent = "Prénom non valide.";
         return false;
@@ -393,25 +420,25 @@ const validEmail = function (inputEmail)
 }
 
 /**
+ * Commander.
  * Récupération et analysation des données saisies par l'utilisateur dans le formulaire.
- * Passer la commande.
- * @param {Array} productLs Array qui le/les articles dans le panier.
+ * @param {Array} productLs Array qui contient tous les Articles avec leur prix, leur quantité, etc ...
  * @param {Event} event Event qui confirme la commande.
  * @returns
  */
-function postForm(productLs, event)
+function sendOrder(productLs, event)
 {
     event.preventDefault();
     console.log(productLs);
 
-    // Récupération des coordonnées du formulaire client
+    // Je récupére les input
     let inputFirstName = document.getElementById('firstName');
     let inputLastName = document.getElementById('lastName');
     let inputAddress = document.getElementById('address');
     let inputCity = document.getElementById('city');
     let inputEmail = document.getElementById('email');
 
-    // On vérifie que les champs sont correctement remplis suivant les regex mises en place
+    // Je vérifie si l'utilisateur a bien remplit les champs du formulaire
     if (
     !validFirstName(inputFirstName) ||
     !validLastName(inputLastName) ||
@@ -423,7 +450,7 @@ function postForm(productLs, event)
         return false;
     }
 
-    //
+    // idProd est un tableau vide
     let idProd = [];
     for (let i = 0; i < productLs.length; i++)
     {
@@ -431,7 +458,7 @@ function postForm(productLs, event)
     }
     console.log(idProd);
 
-    //
+    // Création d'un objet contact avec un tableau des Articles
     const order =
     {
         contact :
@@ -447,24 +474,31 @@ function postForm(productLs, event)
 
     console.log(order);
 
-    // Requête POST sur l'API
+    // Création de l'entête de la requête
     const options = {
+        // Méthode HTTP
         method: 'POST',
+        // headers qui donnent un peu plus d'informations su rnotre requête
         headers:
         {
             "content-type": "application/json"
         },
+        // On souhaite envoyé du json à notre service web, donc on le stringify
         body: JSON.stringify(order),
     }
 
-    // Récupération de l'ID de commande
+    // Envoi de la requête POST au back-end
     fetch("http://localhost:3000/api/products/order", options)
+    // Récupére le résultat de la requête au format json
     .then((reponse) => reponse.json())
     .then((result) =>
     {
         console.log(result);
+        // Supprime l'Article du Local Storage
         localStorage.removeItem('product');
 
+        // Redirige l'utilisateur sur la page confirmation
+        // Je récupére l'ID de commande dans la réponse
         document.location.href = "confirmation.html?orderId=" + result.orderId;
     })
 }
