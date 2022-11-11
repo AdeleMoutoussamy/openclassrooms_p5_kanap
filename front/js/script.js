@@ -22,9 +22,6 @@ async function allProducts()
  */
 function displayProduct(product)
 {
-    // Affiche les Articles dans la console
-    console.log(product);
-
     // a
     let productLink = document.createElement("a");
     productLink.setAttribute("href","./product.html?id="+ product._id);

@@ -65,9 +65,6 @@ async function getCart()
     */
     function displayProduct(elem, productLs)
     {
-        // Affiche de l'Article dans la console
-        console.log(elem);
-
         // élément "article"
         let productArticle = document.createElement("article");
         document.querySelector("#cart__items").appendChild(productArticle);
@@ -181,8 +178,6 @@ function getTotals(productLs)
     const productTotalQuantity = document.getElementById('totalQuantity');
     // Je met la quantité total à l'id
     productTotalQuantity.textContent = totalQtt;
-    // Affiche la quantité total dans la console
-    console.log(totalQtt);
 
     // Récupération du prix total
     totalPrice = 0;
@@ -196,8 +191,6 @@ function getTotals(productLs)
     const productTotalPrice = document.getElementById('totalPrice');
     // Je met le prix total à l'id
     productTotalPrice.textContent = totalPrice;
-    // Affiche le prix total dans la console
-    console.log(totalPrice);
 }
 
 /**
@@ -215,9 +208,6 @@ function modifyQtt(event, productLs, color, id)
 
     productLs.forEach((part,index) =>
     {
-        // Affiche de l'index de l'Article dans la console
-        console.log(index);
-
         // Je vérifie si l'Article à le même ID et couleur que l'Article que je veux modifié
         if (part._id === id && part.color === color)
         {
@@ -245,12 +235,6 @@ function modifyQtt(event, productLs, color, id)
  */
 function deleteProduct(event, productLs, color, id)
 {
-    // Affiche le tableau, l'event, la color et l'id dans la console
-    console.log(productLs);
-    console.log(event.target);
-    console.log(color);
-    console.log(id);
-
     const ls = JSON.parse(localStorage.getItem("product"));
 
     productLs.forEach((elem, index) => 
@@ -324,8 +308,6 @@ function eventForm()
 // Validation FIRSTNAME
 const validFirstName = function (inputFirstName)
 {
-    console.log(inputFirstName);
-
     // Création des expressions régulières
     let nameRegExp = new RegExp("^[a-zA-Zàâäéèêëïîôöùûüç ,.'-]+$");
     let firstNameErrorMsg = inputFirstName.nextElementSibling;
@@ -346,8 +328,6 @@ const validFirstName = function (inputFirstName)
 // Validation LASTNAME
 const validLastName = function (inputLastName)
 {
-    console.log(inputLastName);
-
     let nameRegExp = new RegExp("^[a-zA-Zàâäéèêëïîôöùûüç ,.'-]+$");
     let lastNameErrorMsg = inputLastName.nextElementSibling;
 
@@ -365,8 +345,6 @@ const validLastName = function (inputLastName)
 // Validation ADDRESS
 const validAddress = function (inputAddress)
 {
-    console.log(inputAddress);
-
     let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+$");
     let addressErrorMsg = inputAddress.nextElementSibling;
 
@@ -384,8 +362,6 @@ const validAddress = function (inputAddress)
 // Validation CITY
 const validCity = function (inputCity)
 {
-    console.log(inputCity);
-
     let nameRegExp = new RegExp("^[a-zA-Zàâäéèêëïîôöùûüç ,.'-]+$");
     let cityErrorMsg = inputCity.nextElementSibling;
 
@@ -403,8 +379,6 @@ const validCity = function (inputCity)
 // Validation EMAIL
 const validEmail = function (inputEmail)
 {
-    console.log(inputEmail);
-
     let emailRegExp = new RegExp("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$");
     let emailErrorMsg = inputEmail.nextElementSibling;
 
@@ -429,7 +403,6 @@ const validEmail = function (inputEmail)
 function sendOrder(productLs, event)
 {
     event.preventDefault();
-    console.log(productLs);
 
     // Je récupére les input
     let inputFirstName = document.getElementById('firstName');
@@ -456,7 +429,6 @@ function sendOrder(productLs, event)
     {
         idProd.push(productLs[i]._id);
     }
-    console.log(idProd);
 
     // Création d'un objet contact avec un tableau des Articles
     const order =
@@ -471,8 +443,6 @@ function sendOrder(productLs, event)
         },
         products: idProd,
     } 
-
-    console.log(order);
 
     // Création de l'entête de la requête
     const options = {
@@ -493,7 +463,6 @@ function sendOrder(productLs, event)
     .then((reponse) => reponse.json())
     .then((result) =>
     {
-        console.log(result);
         // Supprime l'Article du Local Storage
         localStorage.removeItem('product');
 

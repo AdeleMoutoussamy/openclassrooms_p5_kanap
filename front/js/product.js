@@ -21,9 +21,6 @@ async function getArticle()
  */
 function displayArticle(article)
 {
-    // Affiche de l'Article dans la console
-    console.log(article);
-
     // img
     let productImg = document.createElement("img");
     document.querySelector(".item__img").appendChild(productImg);
@@ -93,10 +90,6 @@ function addToCart(idProduct)
             const choiceColor = colorPicked.value;
             const choiceQuantity = quantityPicked.value;
 
-            // Affiche les valeurs dans la console
-            console.log(colorPicked.value);
-            console.log(quantityPicked.value);
-
             // Création d'un objet pour l'Article qui sera ajouté au panier
             const optionsProduct =
             {
@@ -140,8 +133,6 @@ function addToCart(idProduct)
 
             // Je stocke l'Article dans le Local Storage
             localStorage.setItem("product", JSON.stringify(productLs));
-            // Affiche de l'Article sous forme de tableau dans la console
-            console.table(productLs);
 
             alert(' Produit ajouté au panier ! ')
 
